@@ -11,7 +11,7 @@ end
 #########################################################################
 #   methods related to csv file loading and exporting
 #########################################################################
-def load_students(filename)
+def load_students(filename) # reads in the students from the .csv inclusing headers
 	CSV.foreach(filename.strip, headers: true) do |line|
 		first, last, email, section, major1, major2, minor1, minor2 = line[0], line[1], line[2], line[3], line[4], line[5], line[6], line[7]
 		push_student(first, last, email, section, major1, major2, minor1, minor2)
@@ -19,18 +19,15 @@ def load_students(filename)
 	puts "The file has been loaded."
 end
 
-def push_student(first, last, email, section, major1, major2, minor1, minor2)
+def push_student(first, last, email, section, major1, major2, minor1, minor2) # adds students to the array to access later
 	@students << {first: first, last: last, email: email, section: section, major1: major1, major2: major2, minor1: minor1, minor2: minor2}
-		# @stud << Student.new(first,last, email,section,major1,major2,minor1,minor2)
-		# @students << @stud
-	end
-
+end
 
 #########################################################################
 #   methods related creating groups
 #########################################################################
 
-def create_group
+def create_group # provides user with group creation options and then calls appropriate methods
 	puts "1: Section Based (students from the same section)"
 	puts "2: Major Based"
 	puts "3: Minor Based"
@@ -48,49 +45,45 @@ def create_group
 		multi_based
 	elsif input == "0"
 		main_menu
-	else
+	else # input validation
 		puts "Invalid input! Please restart!"
 		create_group
 	end
 
 end
 
-def section_based
-	# section_values = @students.uniq.pluck(:section)
+def section_based 
 	puts "Please enter the section that you would like to split up into groups: "
 	section = gets.strip.to_s
 	@section_all = section_choice(section)
 	puts "How many people would you like in each group? Current population of section " + section + " is "+ @section_all.length.to_s
 	size =  gets.chomp.to_i
-	@section_all = @section_all.each_slice(size.to_i).to_a
-	# print_groups(@section_all)
+	@section_all = @section_all.each_slice(size.to_i).to_a  #slice breaks array up into an array of arrays
+		#doesn't always make evil groups -- no consideration for remainders
 	return @section_all
 end
 
-def section_choice(section) # students is the array
+def section_choice(section) # section is an array
 	@in_section=[];
-	@students.each do |student| # only select students by month
+	@students.each do |student| # only select students in that section
 		if student[:section] == section.to_s
 			@in_section << student
 		end
 	end
-	# print_students(@in_section)
 	return @in_section
 end
 
-def major_choice( major) # students is the array
+def major_choice( major) # major is the array
 	@in_major=[];
-	@students.each do |student| # only select students by month
+	@students.each do |student| # only select students by major (whether its first or second)
 		if student[:major1] == major.to_s || student[:major2] == major.to_s 
 			@in_major << student
 		end
 	end
-	# print_students(@in_section)
 	return @in_major
 end
 
 def major_based
-	# section_values = @students.uniq.pluck(:section)
 	puts "Please enter the major (1st) that you would like to split up into groups: "
 	major = gets.strip.to_s
 	@major_all = major_choice(major)
@@ -101,14 +94,13 @@ def major_based
 	return @major_all
 end
 
-def minor_choice(minor) # students is the array
+def minor_choice(minor) # minor is the array
 	@in_minor=[];
-	@students.each do |student| # only select students by month
+	@students.each do |student| # only select students by minor (first or second)
 		if student[:minor1] == minor.to_s || student[:minor2] == minor.to_s 
 			@in_minor << student
 		end
 	end
-	# print_students(@in_section)
 	return @in_minor
 end
 
@@ -120,26 +112,24 @@ def minor_based
 	puts "How many people would you like in each group? Current population in " + minor + " is "+ @minor_all.length.to_s
 	size =  gets.chomp.to_i
 	@minor_all = @minor_all.each_slice(size.to_i).to_a
-	print_groups(@minor_all)
 	return @minor_all
 end
 
-def multi_simplify(choice)
-	# section_values = @students.uniq.pluck(:section)
-	if choice == "12"
+def multi_simplify(choice) # method to take into account 2 constraints
+	if choice == "12" # 1 = section 2 = major
 		puts "Please enter the section that you would like"
 		sect = gets.strip.to_s
 		puts "Please enter the major that you would like"
 		major = gets.strip.to_s
-		@sect_all = section_choice(sect)
+		@sect_all = section_choice(sect) # weeds out to only include section
 		@indexes = [];
-		@sect_all.each_with_index do |student, index|
+		@sect_all.each_with_index do |student, index| # if from section array is not the same major
 			if !(student[:major1] == major.to_s || student[:major2] == major.to_s)
-				@indexes << index.to_i
+				@indexes << index.to_i 
 			end
 		end
 
-		@indexes.reverse.each do |index_del|
+		@indexes.reverse.each do |index_del| # deletes array indices that don't meet najor conatraint (reversed so array indixes don't change while deleting)
 			@sect_all.delete_at(index_del.to_i)
 		end
 		puts "How many people would you like in each group? Current population is "+ @sect_all.length.to_s
@@ -147,7 +137,7 @@ def multi_simplify(choice)
 		@sect_all = @sect_all.each_slice(size.to_i).to_a
 		print_groups(@sect_all)
 		return @sect_all
-	elsif choice == "13"
+	elsif choice == "13" # 1 = section 3 = minor
 		puts "Please enter the section that you would like"
 		sect = gets.strip.to_s
 		puts "Please enter the minor that you would like"
@@ -168,7 +158,7 @@ def multi_simplify(choice)
 		@sect_all = @sect_all.each_slice(size.to_i).to_a
 		print_groups(@sect_all)
 		return @sect_all
-	elsif choice == "23"
+	elsif choice == "23" # 2 = major 3 = minor
 		puts "Please enter the major that you would like"
 		major = gets.strip.to_s
 		puts "Please enter the minor that you would like"
@@ -191,7 +181,7 @@ def multi_simplify(choice)
 	end
 end
 
-def multi_based
+def multi_based # provides menu for double constraints
 	puts "1: Major and Section"
 	puts "2: Minor and Section"
 	puts "3: Major and Minor"
@@ -215,22 +205,17 @@ def multi_based
 	end
 end
 
-# def copy_student(student)
-# 	@stud = {first: "#{student[:first]}",last:"#{student[:last]}",email:"#{student[:email]}", section: "#{student[:section]}", major1: "#{student[:major1]}", major2: "#{student[:major2]}", minor1: "#{student[:minor1]}", minor2: "#{student[:minor2]}"} 
-# 	print_students(@stud)
-# end
-
-def export_groups()
+def export_groups() # method to export as file
 	puts "What would you like to name your file? (Please include the '.txt' extension.)"
-	filename = gets.strip.to_s
-	out_file = File.new(filename, 'w')
-	@groups.each_with_index  do |array, ind|
-		out_file.puts "Constraint set " + (ind+1).to_s
-		array.each_with_index do |gr, inde|
+	filename = gets.strip.to_s #removes unwated characters
+	out_file = File.new(filename, 'w') #opens file
+	@groups.each_with_index  do |array, ind| # traverses array of all constraint sets
+		out_file.puts "Constraint set " + (ind+1).to_s 
+		array.each_with_index do |gr, inde| # traverses groups formed from constraints
 			out_file.puts "Group " + (inde+1).to_s
 			string = "%-15s%-15s%-30s%-8s%-30s%-30s%-30s%-30s\n" % ["First Name","Last Name", "Email", "Section", "Major","Major (2nd)", "Minor","Minor (2nd)"]
 			out_file.puts (string.to_s)
-			gr.each do |student|
+			gr.each do |student| # traverses students in the groups formed from the constraints
 				string = "%-15s%-15s%-30s%-8s%-30s%-30s%-30s%-30s\n" % ["#{student[:first]}"," #{student[:last]}", "#{student[:email]}", "#{student[:section]}", "#{student[:major1]}","#{student[:major2]}", "#{student[:minor1]}","#{student[:minor2]}"]
 				out_file.puts (string.to_s)
 			end
@@ -244,7 +229,7 @@ end
 #   methods related to printing out student data
 #########################################################################
 
-def print_students (array)
+def print_students (array) # prints and formats students data so it is readable
 	printf("%-15s%-15s%-30s%-8s%-30s%-30s%-30s%-30s\n", "First Name","Last Name", "Email", "Section", "Major","Major (2nd)", "Minor","Minor (2nd)")
 	array.each  do |student| # only select students by month
 		# puts "#{student[:first]} #{student[:last]} #{student[:email]} #{student[:section]} #{student[:major1]} #{student[:major2]}  #{student[:minor2]} #{student[:minor2]}  "
@@ -252,33 +237,29 @@ def print_students (array)
 	end
 end
 
-def print_groups (array)
+def print_groups (array) # prints groups formed by a single constraint set
 	array.each  do |group|
 		print_students(group)
 		puts "\n"
 	end
 end
 
-def print_all_groups 
+def print_all_groups # prints all the groups formed by all the constraint sets
 	@groups.each  do |group|
 		print_groups(group)
 		puts "\n\n"
 	end
 end
 
-
 #########################################################################
 #   methods related to editing a students data
 #########################################################################
-def edit_student
+
+def edit_student  #provides user the ability to change any attribute of the student -- looks up by email only
 	puts "What is the email of the student whose information you would like to change: "
 	email = gets
 	email.chomp
-	# puts "What is the last name of the student whose information you would like to change: "
-	# lastname = gets
-	# lastname.chomp
 	@students.each do |student|
-		# puts "#{student[:email]}".strip.eql? email.strip
 		if "#{student[:email]}".strip.eql? email.strip
 			puts "Student found. What would you like to change about the student?"
 			puts "1: First Name"
@@ -340,7 +321,7 @@ def edit_student
 	end
 end
 
-def student_options
+def student_options # provides use with option to student directory and calls appropriate methods
 	puts "What would you like to do?"
 	puts "1: Edit existing student"
 	puts "2: Create new student"
@@ -361,7 +342,7 @@ def student_options
 	end	
 end
 
-def create_student
+def create_student # creates a new student in the dircetory
 	puts "What is the student's first name?"
 	first = gets.strip
 	puts "What is the student's last name?"
@@ -381,8 +362,7 @@ def create_student
 	push_student(first, last, email, section, major1, major2, minor1, minor2)
 end
 
-
-def delete_student
+def delete_student  # deletes student from the direectory -- email lookup only
 	puts "What is the email of the student whose information you would like to change: "
 	email = gets
 	email.chomp
@@ -392,17 +372,18 @@ def delete_student
 			index_del = index
 		end
 	end
-	if index_del == nil
+	if index_del == nil # makes sure student is found
 		puts "Invalid student search, please restart!"
 		student_options
 	else @students.delete_at(index_del)
 	end
 
 end
+
 #########################################################################
 #   methods related to the main menu and choice evaluation
 #########################################################################
-def menu_choice(choice)
+def menu_choice(choice) # evaluates user's choice and calls appropriate methods
 	if choice == "0\n"
 		puts "Goodbye! Have a great day!"
 	elsif choice == "1\n"
@@ -432,7 +413,7 @@ def menu_choice(choice)
 	end
 end
 
-def main_menu
+def main_menu # main menu that presents all of the main options to teh user
 	puts "----- Main Menu ------"
 	puts "1: Load .csv File"
 	puts "2: Edit/Add/Delete Student"
@@ -451,15 +432,4 @@ end
 #   "main" code/method
 #########################################################################
 
-# load_students("test_file.csv")
-# edit_student
-# print_students (@students)
-# section_choice(@students, 9)
-# section_choice(@students, 3)
-# print_groups(@groups)
 Assignment1.new 
-#main_menu
-# print_groups(@groups)
-# @students.each do | stud | # prints student lists by cohort
-# 		puts stud
-# 	end

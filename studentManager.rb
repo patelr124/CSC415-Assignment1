@@ -4,13 +4,12 @@ require 'pp'
 
 
 @students = [] # define a variable accessible to all methods
-# @stud = Student.new
 @groups = []
 
 #########################################################################
 #   methods related to csv file loading and exporting
 #########################################################################
-def load_students(filename)
+def load_students(filename) # reads in the students from the .csv inclusing headers
 	CSV.foreach(filename.strip, headers: true) do |line|
 		first, last, email, section, major1, major2, minor1, minor2 = line[0], line[1], line[2], line[3], line[4], line[5], line[6], line[7]
 		push_student(first, last, email, section, major1, major2, minor1, minor2)
@@ -18,7 +17,7 @@ def load_students(filename)
 	puts "The file has been loaded."
 end
 
-def push_student(first, last, email, section, major1, major2, minor1, minor2)
+def push_student(first, last, email, section, major1, major2, minor1, minor2) # adds students to the array to access later
 	@students << {first: first, last: last, email: email, section: section, major1: major1, major2: major2, minor1: minor1, minor2: minor2}
 		# @stud << Student.new(first,last, email,section,major1,major2,minor1,minor2)
 		# @students << @stud
@@ -29,15 +28,15 @@ def push_student(first, last, email, section, major1, major2, minor1, minor2)
 #   methods related creating groups
 #########################################################################
 
-def create_group
+def create_group #provides options of teh different groups
 	puts "1: Section Based (students from the same section)"
 	puts "2: Major Based"
 	puts "3: Minor Based"
 	puts "4: More than 1 Basis (ex. major and section)"
 	puts "0: Back to Main Menu"
 	puts "Please type the option number that you would like:"
-	input = gets.strip
-	if input == "1"
+	input = gets.strip  #removes empty/whitespaces
+	if input == "1" #calls different methods depending on use input
 		section_based
 	elsif input == "2"
 		
