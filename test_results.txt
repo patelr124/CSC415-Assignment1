@@ -1,0 +1,30 @@
+Constraint set 1
+Group 1
+First Name     Last Name      Email                         Section Major                         Major (2nd)                   Minor                         Minor (2nd)                   
+Tobye           Ablott        tablottjt@live.com            3       Criminology                   Computer Science                                                                          
+Shurlock        Agdahl        sagdahl21@histats.com         3       Criminology                   Computer Science                                                                          
+
+Group 2
+First Name     Last Name      Email                         Section Major                         Major (2nd)                   Minor                         Minor (2nd)                   
+Malory          Alcorn        malcornnw@vkontakte.ru        3       Criminology                   Computer Science                                                                          
+Mal             Alrn          malcnnw@vkontakte.ru          5       Criminology                   Computer Science                                                                          
+
+Group 3
+First Name     Last Name      Email                         Section Major                         Major (2nd)                   Minor                         Minor (2nd)                   
+Chinnu          Mathews       hhihi@vkontakte.ru            3       Criminology                   Computer Science                                                                          
+
+
+
+Constraint set 2
+Group 1
+First Name     Last Name      Email                         Section Major                         Major (2nd)                   Minor                         Minor (2nd)                   
+Tobye           Ablott        tablottjt@live.com            3       Criminology                   Computer Science                                                                          
+Shurlock        Agdahl        sagdahl21@histats.com         3       Criminology                   Computer Science                                                                          
+
+Group 2
+First Name     Last Name      Email                         Section Major                         Major (2nd)                   Minor                         Minor (2nd)                   
+Malory          Alcorn        malcornnw@vkontakte.ru        3       Criminology                   Computer Science                                                                          
+Chinnu          Mathews       hhihi@vkontakte.ru            3       Criminology                   Computer Science                                                                          
+
+
+
