@@ -1,10 +1,12 @@
 # require './student.rb'
-require './group.rb'
 require 'csv'
+require './group.rb'
+
+
 class Assignment1
 
-	def initialize
-		@students = Group.new
+def initialize
+	@students = Group.new
 	# load_students("test_file.csv")
 	main_menu
 end
@@ -65,6 +67,34 @@ def load_students(filename) # reads in the students from the .csv inclusing head
 	end
 end
 
+def student_options # provides use with option to student directory and calls appropriate methods
+	puts "What would you like to do?"
+	puts "1: Edit existing student"
+	puts "2: Create new student"
+	puts "3: Delete existing student"
+	puts "10: Back to Main Menu"
+	input = gets.to_i
+	case input
+	when 0 
+		puts "Invalid student search, please restart!"
+		student_options
+	when 1
+		edit_student
+	when 2
+		add_student
+	when 3
+		delete_student
+	when 10
+		main_menu
+	end	
+end
+
+def edit_student()
+	puts "What is the email of the student whose information you would like to change: "
+	@ch_student = @students.find(gets.chomp)
+	@ch_student.change_student
+end
+
 def add_student()
 	puts "What is the student's first name?"
 	first = gets.strip
@@ -84,6 +114,7 @@ def add_student()
 	minor2 = gets.strip
 	@students.add(Student.new(first, last, email, section, major1, major2, minor1, minor2))
 end
+
 
 end
 Assignment1.new
