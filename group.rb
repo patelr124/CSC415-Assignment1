@@ -14,4 +14,13 @@ class Group
 			student.print
 		end
 	end
+
+	def find(email)
+		@group.each do |student|
+			if student.get_email.strip.eql? email.strip
+				return student
+			end
+		end
+	end
+
 end
